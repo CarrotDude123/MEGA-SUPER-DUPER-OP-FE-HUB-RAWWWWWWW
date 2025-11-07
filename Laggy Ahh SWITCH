@@ -1,0 +1,105 @@
+if not settings() then
+warn("bruh")
+end
+ 
+local LagswitchGUI = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Button = Instance.new("TextButton")
+local Button2 = Instance.new("TextButton")
+local Deco = Instance.new("TextLabel")
+ 
+LagswitchGUI.Name = "LagswitchGUI"
+LagswitchGUI.Parent = game.CoreGui
+ 
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = LagswitchGUI
+MainFrame.Active = true
+MainFrame.BackgroundColor3 = Color3.new(0.196078, 0.196078, 0.196078)
+MainFrame.BorderSizePixel = 0
+MainFrame.Draggable = true
+MainFrame.Position = UDim2.new(0.25, 0, 0.25, 0)
+MainFrame.Size = UDim2.new(0.150000006, 0, 0.100000001, 0)
+ 
+Button.Name = "Button"
+Button.Parent = MainFrame
+Button.BackgroundColor3 = Color3.new(0, 0, 0)
+Button.BorderSizePixel = 0
+Button.Position = UDim2.new(0.0500000007, 0, 0.400000006, 0)
+Button.Size = UDim2.new(0.5, 0, 0.400000006, 0)
+Button.Font = Enum.Font.SourceSans
+Button.FontSize = Enum.FontSize.Size14
+Button.Text = "OFF"
+Button.TextColor3 = Color3.new(1, 0, 0)
+Button.TextScaled = true
+Button.TextSize = 14
+Button.TextWrapped = true
+ 
+Deco.Name = "Deco"
+Deco.Parent = MainFrame
+Deco.BackgroundColor3 = Color3.new(1, 1, 1)
+Deco.BackgroundTransparency = 0.89999997615814
+Deco.BorderSizePixel = 0
+Deco.Size = UDim2.new(1, 0, 0.300000012, 0)
+Deco.Font = Enum.Font.SourceSansBold
+Deco.FontSize = Enum.FontSize.Size14
+Deco.Text = "Lag Timestop"
+Deco.TextColor3 = Color3.new(1, 1, 1)
+Deco.TextScaled = true
+Deco.TextSize = 14
+Deco.TextWrapped = true
+ 
+Button2.Name = "Button2"
+Button2.Parent = MainFrame
+Button2.BackgroundColor3 = Color3.new(0, 0, 0)
+Button2.BorderSizePixel = 0
+Button2.Position = UDim2.new(0.649999976, 0, 0.400000006, 0)
+Button2.Size = UDim2.new(0.300000012, 0, 0.400000006, 0)
+Button2.Font = Enum.Font.SourceSans
+Button2.FontSize = Enum.FontSize.Size14
+Button2.Text = "TP"
+Button2.TextColor3 = Color3.fromRGB(0, 50, 50)
+Button2.TextScaled = true
+Button2.TextSize = 14
+Button2.TextWrapped = true
+ 
+local lastPos = CFrame.new(Vector3.new(0, 0, 0))
+ 
+setting = settings().Network
+local Effect = Instance.new("ColorCorrectionEffect")
+Effect.Parent = game.Lighting
+Effect.Saturation = -1
+Effect.Brightness = 0
+Effect.Contrast = 0
+toggle = false
+Effect.Enabled = false
+ 
+Button.MouseButton1Down:connect(
+function()
+if toggle == false then
+lastPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+setting.IncomingReplicationLag = 10000
+Effect.Enabled = true
+toggle = true
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed * 3
+Button.TextColor3 = Color3.new(0, 1, 0)
+Button.Text = "ON"
+Button2.TextColor3 = Color3.fromRGB(0, 255, 255)
+else
+setting.IncomingReplicationLag = 0
+Effect.Enabled = false
+toggle = false
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+Button.TextColor3 = Color3.new(1, 0, 0)
+Button.Text = "OFF"
+Button2.TextColor3 = Color3.fromRGB(0, 50, 50)
+end
+end
+)
+ 
+Button2.MouseButton1Down:connect(
+function()
+if toggle == true then
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = lastPos
+end
+end
+)
