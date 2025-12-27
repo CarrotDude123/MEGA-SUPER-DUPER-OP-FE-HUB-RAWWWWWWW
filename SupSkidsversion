@@ -1,0 +1,410 @@
+Players = game:GetService("Players")
+ReplicatedStorage = game:GetService("ReplicatedStorage")
+LocalPlayer = Players.LocalPlayer
+screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ServerCmdBarGui"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 800, 0, 540)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -270)
+mainFrame.BackgroundColor3 = Color3.new(1, 1, 1)
+mainFrame.BorderSizePixel = 0
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = screenGui
+---- Made by karrote kid
+topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, 0, 0, 36)
+topBar.Position = UDim2.new(0, 0, 0, 0)
+topBar.BackgroundColor3 = Color3.new(0.95, 0.95, 0.95)
+topBar.BorderSizePixel = 0
+topBar.Parent = mainFrame
+topBar.Active = true
+---- Some glitches fixed by Chat GPT
+dragging = false
+local dragStart, startPos
+topBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = mainFrame.Position
+	end
+end)
+topBar.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+topBar.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+---- Optimized by karrote kid, have fun editing! Skids!
+cmdLabel = Instance.new("TextLabel")
+cmdLabel.Name = "CmdLabel"
+cmdLabel.Text = "Server cmd bar v0.5"
+cmdLabel.Font = Enum.Font.SourceSansBold
+cmdLabel.TextSize = 22
+cmdLabel.TextColor3 = Color3.new(0,0,0)
+cmdLabel.BackgroundTransparency = 1
+cmdLabel.Size = UDim2.new(0, 200, 1, 0)
+cmdLabel.Position = UDim2.new(0, 10, 0, 0)
+cmdLabel.TextXAlignment = Enum.TextXAlignment.Left
+cmdLabel.Parent = topBar
+----minimize button
+minButton = Instance.new("TextButton")
+minButton.Name = "MinimizeButton"
+minButton.Text = "-"
+minButton.Font = Enum.Font.SourceSansBold
+minButton.TextSize = 24
+minButton.TextColor3 = Color3.new(0,0,0)
+minButton.BackgroundColor3 = Color3.new(1,1,1)
+minButton.Size = UDim2.new(0, 36, 0, 36)
+minButton.Position = UDim2.new(1, -80, 0, 0)
+minButton.Parent = topBar
+----close and reopen
+closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 22
+closeButton.TextColor3 = Color3.new(0,0,0)
+closeButton.BackgroundColor3 = Color3.new(1,1,1)
+closeButton.Size = UDim2.new(0, 36, 0, 36)
+closeButton.Position = UDim2.new(1, -40, 0, 0)
+closeButton.Parent = topBar
+reopenButton = Instance.new("ImageButton")
+reopenButton.Name = "ReopenButton"
+reopenButton.Size = UDim2.new(0, 48, 0, 48)
+reopenButton.Position = UDim2.new(1, -58, 1, -58)
+reopenButton.AnchorPoint = Vector2.new(1,1)
+reopenButton.BackgroundTransparency = 1
+reopenButton.Image = ""
+reopenButton.Visible = false
+reopenButton.Parent = screenGui
+circle = Instance.new("ImageLabel")
+circle.Size = UDim2.new(1, 0, 1, 0)
+circle.BackgroundColor3 = Color3.new(1,1,1)
+circle.BorderSizePixel = 0
+circle.Parent = reopenButton
+circle.Image = "http://www.roblox.com/asset/?id=129163168509735"
+local uicorner = Instance.new("UICorner")
+uicorner.CornerRadius = UDim.new(1,0)
+uicorner.Parent = circle
+----
+cmdPanel = Instance.new("ScrollingFrame")
+cmdPanel.Name = "CmdPanel"
+cmdPanel.Size = UDim2.new(0, 560, 1, -70)
+cmdPanel.Position = UDim2.new(0, 20, 0, 46)
+cmdPanel.BackgroundColor3 = Color3.new(0.98,0.98,0.98)
+cmdPanel.BorderSizePixel = 1
+cmdPanel.ScrollBarThickness = 8
+cmdPanel.CanvasSize = UDim2.new(0, 0, 0, 900)
+cmdPanel.Parent = mainFrame
+----
+cmdBarScroll = Instance.new("ScrollingFrame")
+cmdBarScroll.Name = "CmdBarScroll"
+cmdBarScroll.Size = UDim2.new(1, -20, 0, 200)
+cmdBarScroll.Position = UDim2.new(0, 10, 0, 10)
+cmdBarScroll.BackgroundColor3 = Color3.new(0.95,0.95,0.95)
+cmdBarScroll.BorderSizePixel = 1
+cmdBarScroll.ScrollBarThickness = 8
+cmdBarScroll.CanvasSize = UDim2.new(0, 0, 0, 200)
+cmdBarScroll.ClipsDescendants = true
+cmdBarScroll.Parent = cmdPanel
+----
+local cmdBar = Instance.new("TextBox")
+cmdBar.Name = "CmdBar"
+cmdBar.PlaceholderText = "Type script here..."
+cmdBar.Font = Enum.Font.Code
+cmdBar.TextSize = 18
+cmdBar.TextColor3 = Color3.new(0,0,0)
+cmdBar.BackgroundTransparency = 1
+cmdBar.BorderSizePixel = 0
+cmdBar.Size = UDim2.new(1, -10, 0, 200)
+cmdBar.Position = UDim2.new(0, 5, 0, 0)
+cmdBar.ClearTextOnFocus = false
+cmdBar.TextXAlignment = Enum.TextXAlignment.Left
+cmdBar.TextYAlignment = Enum.TextYAlignment.Top
+cmdBar.Text = ""
+cmdBar.MultiLine = true
+cmdBar.ClipsDescendants = false
+cmdBar.Parent = cmdBarScroll
+----
+cmdBar:GetPropertyChangedSignal("Text"):Connect(function()
+	local lineCount = select(2, cmdBar.Text:gsub("\n", "\n")) + 1
+	local neededHeight = math.max(200, lineCount * 22)
+	cmdBar.Size = UDim2.new(1, -10, 0, neededHeight)
+	cmdBarScroll.CanvasSize = UDim2.new(0, 0, 0, neededHeight)
+end)
+----
+local function createClickSound()
+	local sound = Instance.new("Sound")
+	sound.Name = "clicksound"
+	sound.SoundId = "rbxassetid://9118823104" -- sound but not working ¯\_(ツ)_/¯ u can fix this if you want
+	sound.Volume = 0.5
+	sound.PlayOnRemove = false
+	sound.Looped = false
+	sound.Parent = nil 
+	return sound
+end
+-- run scripts button
+runButton = Instance.new("TextButton")
+runButton.Name = "runbutton"
+runButton.Text = "Run"
+runButton.Font = Enum.Font.SourceSansBold
+runButton.TextSize = 18
+runButton.TextColor3 = Color3.new(1,1,1)
+runButton.BackgroundColor3 = Color3.new(0.2,0.6,0.2)
+runButton.Size = UDim2.new(0, 80, 0, 35)
+runButton.Position = UDim2.new(1, -90, 0, 220)
+runButton.Parent = cmdPanel
+runClickSound = createClickSound()
+runClickSound.Parent = runButton
+-- walkspeed changer
+local wsButton = Instance.new("TextButton")
+wsButton.Name = "WSbutton"
+wsButton.Text = "Change WS"
+wsButton.Font = Enum.Font.SourceSansBold
+wsButton.TextSize = 16
+wsButton.TextColor3 = Color3.new(0,0,0)
+wsButton.BackgroundColor3 = Color3.new(0.85,0.85,1)
+wsButton.Size = UDim2.new(0, 100, 0, 30)
+wsButton.Position = UDim2.new(0, 10, 0, 220)
+wsButton.Parent = cmdPanel
+wsClickSound = createClickSound()
+wsClickSound.Parent = wsButton
+
+wsInput = Instance.new("TextBox")
+wsInput.Name = "WalkSpeedInput"
+wsInput.PlaceholderText = "Enter WalkSpeed"
+wsInput.Font = Enum.Font.SourceSans
+wsInput.TextSize = 16
+wsInput.TextColor3 = Color3.new(0,0,0)
+wsInput.BackgroundColor3 = Color3.new(0.95,0.95,1)
+wsInput.BorderSizePixel = 1
+wsInput.Size = UDim2.new(0, 100, 0, 26)
+wsInput.Position = UDim2.new(0, 10, 0, 255)
+wsInput.ClearTextOnFocus = false
+wsInput.TextXAlignment = Enum.TextXAlignment.Left
+wsInput.TextYAlignment = Enum.TextYAlignment.Top
+wsInput.Text = ""
+wsInput.Parent = cmdPanel
+-- jumppower changer
+jpButton = Instance.new("TextButton")
+jpButton.Name = "JPbutton"
+jpButton.Text = "Change JP"
+jpButton.Font = Enum.Font.SourceSansBold
+jpButton.TextSize = 16
+jpButton.TextColor3 = Color3.new(0,0,0)
+jpButton.BackgroundColor3 = Color3.new(1,0.85,0.85)
+jpButton.Size = UDim2.new(0, 100, 0, 30)
+jpButton.Position = UDim2.new(0, 120, 0, 220)
+jpButton.Parent = cmdPanel
+jpClickSound = createClickSound()
+jpClickSound.Parent = jpButton
+jpInput = Instance.new("TextBox")
+jpInput.Name = "JumpPowerInput"
+jpInput.PlaceholderText = "Enter JumpPower"
+jpInput.Font = Enum.Font.SourceSans
+jpInput.TextSize = 16
+jpInput.TextColor3 = Color3.new(0,0,0)
+jpInput.BackgroundColor3 = Color3.new(1,0.95,0.95)
+jpInput.BorderSizePixel = 1
+jpInput.Size = UDim2.new(0, 100, 0, 26)
+jpInput.Position = UDim2.new(0, 120, 0, 255)
+jpInput.ClearTextOnFocus = false
+jpInput.TextXAlignment = Enum.TextXAlignment.Left
+jpInput.TextYAlignment = Enum.TextYAlignment.Top
+jpInput.Text = ""
+jpInput.Parent = cmdPanel
+-- output panel label
+local outputLabel = Instance.new("TextLabel")
+outputLabel.Name = "output"
+outputLabel.Text = "OutPut will appear here."
+outputLabel.Font = Enum.Font.Code
+outputLabel.TextSize = 16
+outputLabel.TextColor3 = Color3.new(0.2,0.2,0.2)
+outputLabel.BackgroundTransparency = 1
+outputLabel.Size = UDim2.new(1, -20, 0, 60)
+outputLabel.Position = UDim2.new(0, 10, 0, 295)
+outputLabel.TextXAlignment = Enum.TextXAlignment.Left
+outputLabel.TextYAlignment = Enum.TextYAlignment.Bottom -- Align text to bottom
+outputLabel.TextWrapped = true 
+outputLabel.ClipsDescendants = true
+outputLabel.Parent = cmdPanel
+----
+scrollFrame = Instance.new("ScrollingFrame")
+scrollFrame.Name = "LoadstringMenu"
+scrollFrame.Size = UDim2.new(0, 180, 0, 470)
+scrollFrame.Position = UDim2.new(1, -200, 0, 46)
+scrollFrame.BackgroundColor3 = Color3.new(0.97,0.97,0.97)
+scrollFrame.BorderSizePixel = 1
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+scrollFrame.ClipsDescendants = true
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0) 
+scrollFrame.Parent = mainFrame
+----
+menuLayout = Instance.new("UIListLayout")
+menuLayout.SortOrder = Enum.SortOrder.LayoutOrder
+menuLayout.Padding = UDim.new(0, 10)
+menuLayout.Parent = scrollFrame
+menuLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrollFrame.CanvasSize = UDim2.new(0, 0, 0, menuLayout.AbsoluteContentSize.Y + 10)
+end)
+    function addMenuButton(name, text, layoutOrder, url, successMsg, errorMsg)
+	local button = Instance.new("TextButton")
+	button.Name = name
+	button.Text = text
+	button.Font = Enum.Font.SourceSansBold
+	button.TextSize = 18
+	button.TextColor3 = Color3.new(0,0,0)
+	button.BackgroundColor3 = Color3.new(1,1,1)
+	button.BorderSizePixel = 1
+	button.Size = UDim2.new(1, 0, 0, 40)
+	button.LayoutOrder = layoutOrder
+	button.Parent = scrollFrame
+	local clickSound = createClickSound()
+	clickSound.Parent = button
+	button.MouseButton1Click:Connect(function()
+		clickSound:Play()
+		if not game.HttpGet or not loadstring then
+			outputLabel.Text = "Error: game:HttpGet or loadstring is not available in this environment."
+			return
+		end
+		local code
+		local success, msg = pcall(function()
+		code = game:HttpGet(url)
+		end)
+		if success and code then
+			local func, err = loadstring(code)
+			if func then
+				local ok, result = pcall(func)
+				if ok then
+					outputLabel.Text = successMsg
+				else
+					outputLabel.Text = errorMsg..": "..tostring(result)
+				end
+			else
+				outputLabel.Text = errorMsg.." (compile): "..tostring(err)
+			end
+		else
+			outputLabel.Text = errorMsg.." (fetch): "..tostring(msg)
+		end
+	end)
+	return button
+end
+addMenuButton("InfinityYieldButton", "Infinity Yield", 1, "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source", "Infinity Yield loaded successfully.", "Error running Infinity Yield")
+addMenuButton("ExplorerButton", "Explorer", 2, "https://raw.githubusercontent.com/nuIIism/scripts/main/dex.lua", "Explorer loaded successfully.", "Error running Explorer")
+addMenuButton("FEHubButton", "FE hub(R6)", 3, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/Main", "FE hub loaded successfully.", "Error running FE hub")
+addMenuButton("AttacherHumButton", "Telekinesis V4", 4, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/Telekinesis%20Fizxed", "Telekinesis loaded successfully.", "Error running Telekinesis")
+addMenuButton("LalolHubButton", "Lalol hub", 5, "https://raw.githubusercontent.com/Obunga-666/Lalol-hub-without-hint/refs/heads/main/Lalol%20hub%20without%20hint", "Lalol hub loaded successfully.", "Error running Lalol hub")
+addMenuButton("1X1X1X1VisualButton", "1X1X1X1 Visual", 6, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/1X1X1X1%20SKIDDED", "1X1X1X1 Visual loaded successfully.", "Error running 1X1X1X1 Visual")
+addMenuButton("SpiderManButton", "SpiderMan FE", 7, "https://raw.githubusercontent.com/0Ben1/fe/main/obf_E872F3ky4888TSVdj6Adgi1hSLtM038AyxVpTVw07QA3QUDcI3sxmuD869hYR4id.lua.txt", "SpidermanFe loaded successfully.", "Error running SpidermanFe")
+addMenuButton("BirdScriptButton", "Crystall Dance(R6)", 8, "https://pastebin.com/raw/vT1URaRJ", "CrystallDance loaded successfully.", "Error running CrystallDance")
+addMenuButton("GodTouchButton", "Touch Fling", 9, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/TOUCH%20FLINGG", "GodTouch loaded successfully.", "Error running GodTouch")
+addMenuButton("AnimFEButton", "Fe Hub v2(R15/R6)", 10, "https://pastebin.com/raw/Cfeu2ZPc", "AnimFE loaded successfully.", "Error running AnimFE")
+addMenuButton("LagSwitchButton", "Lagger(Client)", 11, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/Laggy%20Ahh%20SWITCH", "Lag Switch loaded successfully.", "Error running Lag Switch")
+addMenuButton("StreamSniperButton", "Stream Sniper(KEY)", 12, "https://raw.githubusercontent.com/FFJ1/Roblox-Exploits/main/scripts/Sniper.lua", "Stream Sniping Device loaded successfully.", "Error running Stream Sniper")
+addMenuButton("ESPgodModeButton", "ESP/God", 13, "loadstring(game:HttpGet('https://raw.githubusercontent.com/Dizzysky1/god-mode-universal-script-2024/main/script'))()", "ESP/God loaded successfully.", "Error running ESP/God")
+addMenuButton("FtapButton", "FTAP Hub by me", 14, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/antiskidding_machine_ftap", "FTAP loaded successfully.", "Error running FTAP")
+addMenuButton("GhostButton", "Teleport Ghost(use K)", 15, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/GhostReincarnation", "Ghost loaded successfully. Use K to teleport", "Error summoning Ghost")
+addMenuButton("InfinityTriads", "XVC`s Universal", 16, "https://pastebin.com/raw/Piw5bqGq", "XVC`s Gui loaded successfully.", "Error running XVC`s Gui")
+addMenuButton("MobileFlyGuyButton", "Fly gui for Mobile", 17, "https://raw.githubusercontent.com/makkurokurosukescript/VFly-gui/refs/heads/main/VFly%20gui", "Fly Gui loaded successfully.", "Error running Fly Gui")
+addMenuButton("SuperButton", "ZO Vortex Gui", 18, "https://raw.githubusercontent.com/Ziadlegend/ZOVortexHub/main/Main.lua", "ZO Vortex Gui loaded successfully.", "Error running ZO Vortex Gui")
+addMenuButton("megaButton", "Troller R6", 19, "https://raw.githubusercontent.com/CarrotDude123/MEGA-SUPER-DUPER-OP-FE-HUB-RAWWWWWWW/refs/heads/main/Superrrrbuton", "Troll Gui loaded successfully.", "Error running Troll Gui")
+addMenuButton("SuperduperButton", "coolgui v1(50/50 visual)", 20, "https://raw.githubusercontent.com/thuker-evader/Roblox/refs/heads/main/c00lkid%20gui", "cool Gui loaded successfully.", "Error running cool Gui")
+---- you can copy the button code and paste it to make more buttons, in first argument put button name, in second, layout position. 3rd the loadstring, 4th, text on succes, 5th text on error :DDD
+runButton.MouseButton1Click:Connect(function()
+	runClickSound:Play()
+	local code = cmdBar.Text
+	if code and code ~= "" then
+		if not loadstring then
+			outputLabel.Text = "Error: loadstring is not available in this environment."
+			return
+		end
+		local func, err = loadstring(code)
+		if func then
+			local success, msg = pcall(func)
+			if not success then
+				outputLabel.Text = "Error: "..tostring(msg)
+			else
+				outputLabel.Text = "Script ran successfully."
+			end
+		else
+			outputLabel.Text = "Compile error: "..tostring(err)
+		end
+	else
+		outputLabel.Text = "Please enter code to run."
+	end
+end)
+wsButton.MouseButton1Click:Connect(function()
+	wsClickSound:Play()
+	local character = LocalPlayer.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			local inputText = wsInput.Text
+			local newSpeed = tonumber(inputText)
+			if newSpeed and newSpeed > 0 then
+				humanoid.WalkSpeed = newSpeed
+				outputLabel.Text = "WalkSpeed set to "..newSpeed
+			else
+				outputLabel.Text = "Please enter a valid WalkSpeed number."
+			end
+		else
+			outputLabel.Text = "No Humanoid found."
+		end
+	else
+		outputLabel.Text = "No character found."
+	end
+end)
+jpButton.MouseButton1Click:Connect(function()
+	jpClickSound:Play()
+	local character = LocalPlayer.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			local inputText = jpInput.Text
+			local newJP = tonumber(inputText)
+			if newJP and newJP > 0 then
+				outputLabel.Text = "JumpPower set to "..newJP
+				humanoid.JumpPower = newJP
+			else
+				outputLabel.Text = "Please enter a valid JumpPower number."
+			end
+		else
+			outputLabel.Text = "No Humanoid found."
+		end
+	else
+		outputLabel.Text = "No character found."
+	end
+end)
+minClickSound = createClickSound()
+minClickSound.Parent = minButton
+minButton.MouseButton1Click:Connect(function()
+minClickSound:Play()
+mainFrame.Visible = false
+reopenButton.Visible = true
+end)
+reopenClickSound = createClickSound()
+reopenClickSound.Parent = reopenButton
+reopenButton.MouseButton1Click:Connect(function()
+	reopenClickSound:Play()
+	mainFrame.Visible = true
+	reopenButton.Visible = false
+end)
+closeClickSound = createClickSound()
+closeClickSound.Parent = closeButton
+closeButton.MouseButton1Click:Connect(function()
+	closeClickSound:Play()
+	screenGui:Destroy()
+end) -- fix smth if u want, i will keep code deobfuscated for you to edit freely or take some features like output
